@@ -1,5 +1,7 @@
 # OpenBMC 作業二：為 ROMULUS 平台新增自定義 Sensor
 本文檔記錄了成功為 ROMULUS 平台新增自定義虛擬感測器 MY_HOMEWORK_TEMP 的完整過程。
+
+
 ## 環境設定
 
 * **主機作業系統：** Windows 11
@@ -13,7 +15,7 @@
 ## 本次實作採用運行時動態設定方式，透過 phosphor-virtual-sensor 服務建立虛擬感測器。
 ## 1. 編譯 OpenBMC 映像檔
 
-bash# 下載 OpenBMC 原始碼
+```
 git clone https://github.com/openbmc/openbmc.git
 cd openbmc
 
@@ -32,20 +34,24 @@ romulus 預設已包含 phosphor-virtual-sensor 和 bmcweb
 
 映像檔：tmp/deploy/images/romulus/obmc-phosphor-image-romulus.static.mtd
 大小：32MB
+```
 
 
 ## 2. 啟動 QEMU 測試環境
 
+```
 bashcd tmp/deploy/images/romulus/
 qemu-system-arm -m 512 -M romulus-bmc -nographic \
   -drive file=obmc-phosphor-image-romulus.static.mtd,format=raw,if=mtd \
   -net nic -net user,hostfwd=:127.0.0.1:2222-:22,hostfwd=:127.0.0.1:2443-:443
 等待系統啟動完成（看到 login 提示）。
+```
 
 
 
 ## 3. 建立虛擬感測器
 
+```
 另開終端機，SSH 登入 BMC：
 bashssh root@localhost -p 2222  # 密碼: 0penBmc
 檢查現有設定：
@@ -89,10 +95,12 @@ EOF
 
 # 重啟服務套用設定
 systemctl restart phosphor-virtual-sensor
+```
 
 
 ## 4. 驗證感測器
 
+```
 檢查服務狀態
 bashsystemctl status phosphor-virtual-sensor
 # 應顯示：Added a new virtual sensor: MY_HOMEWORK_TEMP
@@ -107,10 +115,11 @@ busctl get-property xyz.openbmc_project.VirtualSensor \
   /xyz/openbmc_project/sensors/temperature/MY_HOMEWORK_TEMP \
   xyz.openbmc_project.Sensor.Value Value
 # 輸出：d 25
-
+```
 
 ## 5. WebUI 驗證
 
+```
 瀏覽器開啟：https://localhost:2443
 接受安全性警告
 登入：root / 0penBmc
@@ -135,17 +144,20 @@ busctl get-property xyz.openbmc_project.VirtualSensor \
 json"Associations": [
   ["chassis", "all_sensors", "/xyz/openbmc_project/inventory/system/chassis"]
 ]
+```
 
 
 ## 關鍵發現
 
+```
 Associations 是必要的：沒有正確的關聯，WebUI 無法透過 Redfish API 找到感測器
 romulus 沒有 board inventory：必須使用 /system/chassis 而非 /system/board/romulus_board
 WebUI 已是 Vue 版本：現有的 WebUI 功能完整，問題在於 ObjectMapper 關聯
-
+```
 
 ## 限制與注意事項
 
+```
 重要：此方法的修改是暫時性的！
 
 修改僅存在於記憶體中
@@ -176,11 +188,12 @@ EOF
 # 4. 加入 layer 並重新編譯
 # 在 build-romulus/conf/bblayers.conf 加入 meta-custom
 # 執行 bitbake obmc-phosphor-image
-
+```
 
 
 ## 與原始作業方法的比較
 
+```
 方面原始方法（修改 MTD）本次方法（運行時設定）實作複雜度需解包/重打包 MTD僅需編輯 JSON持久性永久寫入映像檔重啟後消失開發效率每次修改需重新打包即時生效適用場景生產部署開發測試
 作業成果
 ✅ 成功新增 MY_HOMEWORK_TEMP 虛擬感測器
@@ -189,7 +202,7 @@ EOF
 ✅ 設定正確的警告與臨界閾值
 ✅ 了解 phosphor-virtual-sensor 的運作機制
 ✅ 掌握 OpenBMC sensor 架構與 WebUI 整合
-
+```
 
 ## 參考資源
 
