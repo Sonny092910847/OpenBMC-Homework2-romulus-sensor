@@ -83,7 +83,9 @@ systemctl restart phosphor-virtual-sensor
 ## 1. 修改 IPMI Sensor YAML 配置
 
 ```bash
-在編譯前修改 meta-ibm/meta-romulus/recipes-phosphor/configuration/romulus-yaml-config/romulus-ipmi-sensors.yaml，新增第 146 項：
+在編譯前修改 meta-ibm/meta-romulus/recipes-phosphor/configuration/romulus-yaml-config/romulus-ipmi-sensors.yaml
+
+新增第 146 項：
 yaml146:
     bExp: 0
     entityID: 7
@@ -139,20 +141,20 @@ ipmitool sdr elist | grep MY_HOMEWORK_TEMP
 ipmitool sensor get "MY_HOMEWORK_TEMP"
 
 # 顯示完整感測器資訊，包含閾值設定
-技術要點與問題解決
-WebUI 整合關鍵
+# 技術要點與問題解決
+# WebUI 整合關鍵
 
-Associations 必要性：WebUI 透過 Redfish API 查詢感測器，需要正確的 inventory 關聯
-路徑問題：romulus 使用 /system/chassis 而非 /system/board
+# Associations 必要性：WebUI 透過 Redfish API 查詢感測器，需要正確的 inventory 關聯
+# 路徑問題：romulus 使用 /system/chassis 而非 /system/board
 
-IPMI 整合關鍵
+# IPMI 整合關鍵
 
-serviceInterface 設定：必須使用 org.freedesktop.DBus.Properties 而非 xyz.openbmc_project.VirtualSensor
-數值轉換參數：
+# serviceInterface 設定：必須使用 org.freedesktop.DBus.Properties 而非 xyz.openbmc_project.VirtualSensor
+# 數值轉換參數：
 
-offsetB 影響基準值偏移
-scale 影響數值縮放
-錯誤設定會導致顯示 0 度或 "Disabled"
+# offsetB 影響基準值偏移
+# scale 影響數值縮放
+# 錯誤設定會導致顯示 0 度或 "Disabled"
 ```
 
 
