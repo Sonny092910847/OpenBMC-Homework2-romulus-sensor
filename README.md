@@ -134,6 +134,8 @@ ipmitool sdr elist | grep MY_HOMEWORK_TEMP
 ```
 
 # 詳細資訊
+
+```bash
 ipmitool sensor get "MY_HOMEWORK_TEMP"
 
 # 顯示完整感測器資訊，包含閾值設定
@@ -151,14 +153,14 @@ serviceInterface 設定：必須使用 org.freedesktop.DBus.Properties 而非 xy
 offsetB 影響基準值偏移
 scale 影響數值縮放
 錯誤設定會導致顯示 0 度或 "Disabled"
-
+```
 
 
 常見問題
 
-ipmitool 未安裝：需在 local.conf 中加入 IMAGE_INSTALL
-感測器顯示 Disabled：Virtual Sensor 服務未正確載入
-溫度顯示 0 度：YAML 中的數值轉換參數設定錯誤
+* **ipmitool 未安裝：** 需在 local.conf 中加入 IMAGE_INSTALL
+* **感測器顯示 Disabled：** Virtual Sensor 服務未正確載入
+* **溫度顯示 0 度：** YAML 中的數值轉換參數設定錯誤
 
 永久化方案
 若需將設定永久寫入映像檔：
@@ -180,17 +182,17 @@ EOF
 ## 2. 放入設定檔並重新編譯
 作業成果總結
 
-✅ 成功新增 MY_HOMEWORK_TEMP 虛擬感測器
-✅ WebUI 正常顯示溫度值 25°C
-✅ ipmitool sdr elist 正確顯示感測器狀態和數值
-✅ 了解 OpenBMC 的 D-Bus 與 IPMI 層整合機制
-✅ 掌握 phosphor-virtual-sensor 和 phosphor-ipmi-host 的協作方式
+* **✅ ** 成功新增 MY_HOMEWORK_TEMP 虛擬感測器
+* **✅ ** WebUI 正常顯示溫度值 25°C
+* **✅ ** ipmitool sdr elist 正確顯示感測器狀態和數值
+* **✅ ** 了解 OpenBMC 的 D-Bus 與 IPMI 層整合機制
+* **✅ ** 掌握 phosphor-virtual-sensor 和 phosphor-ipmi-host 的協作方式
 
 參考資源
 
-OpenBMC Sensor Architecture
-phosphor-virtual-sensor
-phosphor-host-ipmid
+* **OpenBMC Sensor Architecture
+* **phosphor-virtual-sensor
+* **phosphor-host-ipmid
 
 
 這個更新版本完整記錄了 WebUI 和 ipmitool 的實作過程，特別強調了 IPMI 整合的關鍵設定和問題解決方法！
